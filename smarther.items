@@ -1,0 +1,31 @@
+Group SMA_Thermo     "Heating Thermostat" <heating>
+Group SMA_Thermo_Set "Thermo Settings"    <settings> (SMA_Thermo)
+
+// Smarther thermostat items for exec-binding
+Switch SMA_Thermo_Send      { channel="exec:command:smarther_api:run" }
+String SMA_Thermo_Send_Args { channel="exec:command:smarther_api:input" }
+Number SMA_Thermo_Send_Exit { channel="exec:command:smarther_api:exit" }
+String SMA_Thermo_Send_Data { channel="exec:command:smarther_api:output" }
+
+// Smarther thermostat items for measures
+Number SMA_Thermo_Measure_Temperature "Indoor Temperature [%.1f °C]" <temperature> (SMA_Thermo)
+Number SMA_Thermo_Measure_Humidity    "Indoor Humidity [%.1f %%]"    <humidity>    (SMA_Thermo)
+
+// Smarther thermostat items for status
+Switch SMA_Thermo_Status_Heating      "Heating is now [%s]"          <fire>        (SMA_Thermo)
+String SMA_Thermo_Status_SetMode      "Set Mode [%s]"                <settings>    (SMA_Thermo)
+Number SMA_Thermo_Status_SetPoint     "Set Temperature [%.1f °C]"    <temperature> (SMA_Thermo)
+String SMA_Thermo_Status_SetTime      "Set Timer [%s]"               <time>        (SMA_Thermo)
+Switch SMA_Thermo_Quick_Start         "Quick Start"                                (SMA_Thermo)
+// Smarther thermostat items for settings
+String SMA_Thermo_Set_Function        "Set Function"                 <settings>    (SMA_Thermo_Set)
+String SMA_Thermo_Set_Mode            "Set Mode [%s]"                <settings>    (SMA_Thermo_Set)
+Number SMA_Thermo_Set_Program         "Set Program [%s]"             <settings>    (SMA_Thermo_Set)
+Number SMA_Thermo_Set_Point           "Set Temperature [%s]"         <temperature> (SMA_Thermo_Set)
+Number SMA_Thermo_Set_Date            "Set Date [%s]"                <calendar>    (SMA_Thermo_Set)
+Switch SMA_Thermo_Set_ShowTime                                                     (SMA_Thermo_Set)
+Number SMA_Thermo_Set_Hour            "Set Hour [%s]"                <time>        (SMA_Thermo_Set)
+Number SMA_Thermo_Set_Minute          "Set Minute [%s]"              <time>        (SMA_Thermo_Set)
+Number SMA_Thermo_Set_Boost           "Set Boost Time"               <fire>        (SMA_Thermo_Set)
+Switch SMA_Thermo_Set_ShowApply                                                    (SMA_Thermo_Set)
+Switch SMA_Thermo_Set_Switch          "Apply Changes"                              (SMA_Thermo_Set)

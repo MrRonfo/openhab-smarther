@@ -1,0 +1,186 @@
+//===================================================
+//  SET MANUAL TIMER VISIBILITY FLAG
+//
+rule "Smarther - Set manual timer visibility flag"
+when
+       Item SMA_Thermo_Set_Mode received update
+    or Item SMA_Thermo_Set_Date received update
+then
+    if (SMA_Thermo_Set_Mode.state == "MANUAL" && (SMA_Thermo_Set_Date.state == 1 || SMA_Thermo_Set_Date.state == 2))
+        SMA_Thermo_Set_ShowTime.sendCommand(ON)
+    else
+        SMA_Thermo_Set_ShowTime.sendCommand(OFF)
+end
+
+//===================================================
+//  SET APPLY BUTTON VISIBILITY FLAG
+//
+rule "Smarther - Set Apply button visibility flag"
+when
+       Item SMA_Thermo_Set_Mode received update
+    or Item SMA_Thermo_Set_Program received update
+    or Item SMA_Thermo_Set_Date received update
+    or Item SMA_Thermo_Set_Boost received update
+then
+    if (    (SMA_Thermo_Set_Mode.state == "AUTOMATIC" && SMA_Thermo_Set_Program.state == NULL)
+         || (SMA_Thermo_Set_Mode.state == "MANUAL" && (SMA_Thermo_Set_Date.state == NULL || SMA_Thermo_Set_Date.state > 2))
+         || (SMA_Thermo_Set_Mode.state == "BOOST" && SMA_Thermo_Set_Boost.state == NULL)
+    )
+        SMA_Thermo_Set_ShowApply.sendCommand(OFF)
+    else
+        SMA_Thermo_Set_ShowApply.sendCommand(ON)
+end
+
+//===================================================
+//  RECOVER STATUS AT STARTUP
+//
+rule "Smarther - Refresh status at startup"
+when
+    System started
+then
+    val String rnd = ((Math::random * 1000.0).intValue + 1).toString
+    SMA_Thermo_Send_Args.sendCommand("get_status " + rnd)
+
+    Thread::sleep(1000)
+
+    // Set default command attributes 
+    SMA_Thermo_Set_Function.postUpdate("HEATING")
+    SMA_Thermo_Set_Mode.postUpdate("MANUAL")
+    SMA_Thermo_Set_Point.postUpdate(20)
+    SMA_Thermo_Set_Date.postUpdate(1) // =Today
+    SMA_Thermo_Set_Hour.postUpdate(23)
+    SMA_Thermo_Set_Minute.postUpdate(30)
+end
+
+//===================================================
+//  QUICK START HEATING
+//
+rule "Smarther - Quick start heating"
+when
+    Item SMA_Thermo_Quick_Start received command ON
+then
+    // Set default command attributes 
+    SMA_Thermo_Set_Function.postUpdate("HEATING")
+    SMA_Thermo_Set_Mode.postUpdate("MANUAL")
+    SMA_Thermo_Set_Point.postUpdate(20)
+    SMA_Thermo_Set_Date.postUpdate(1) // =Today
+    SMA_Thermo_Set_Hour.postUpdate(23)
+    SMA_Thermo_Set_Minute.postUpdate(30)
+
+    // Run thermo set switch command 
+    SMA_Thermo_Set_Switch.sendCommand(ON);
+
+    SMA_Thermo_Quick_Start.postUpdate(OFF)
+end
+
+//===================================================
+//  APPLY NEW SETTINGS
+//
+rule "Smarther - Apply new settings"
+when
+    Item SMA_Thermo_Set_Switch received command ON
+then
+    var Integer setProgram = 0
+    var Integer setPoint   = 0
+    var String  setTimeStr = "forever"
+
+    val String  setMode = SMA_Thermo_Set_Mode.state.toString.toLowerCase
+    if (setMode == "automatic") {
+        setProgram = Integer::parseInt(SMA_Thermo_Set_Program.state.toString)
+    }
+    else if (setMode == "manual") {
+        setPoint = Integer::parseInt(SMA_Thermo_Set_Point.state.toString)
+
+        val Integer setDate   = Integer::parseInt(SMA_Thermo_Set_Date.state.toString)
+        val Integer setHour   = Integer::parseInt(SMA_Thermo_Set_Hour.state.toString)
+        val Integer setMinute = Integer::parseInt(SMA_Thermo_Set_Minute.state.toString)
+
+        if (setDate == 1) { //Today
+            setTimeStr = (new DateTime(now.getYear, now.getMonthOfYear, now.getDayOfMonth, setHour, setMinute)).toString
+        }
+        else if (setDate == 2) { //Tomorrow
+            val DateTime tomorrow = now.plusDays(1)
+            setTimeStr = (new DateTime(tomorrow.getYear, tomorrow.getMonthOfYear, tomorrow.getDayOfMonth, setHour, setMinute)).toString
+        }
+    }
+    else if (setMode == "boost") {
+        val Integer setBoost = Integer::parseInt(SMA_Thermo_Set_Boost.state.toString)
+
+        val DateTime boostStart = now
+        setTimeStr = boostStart.toString + "/" + (boostStart.plusMinutes(setBoost)).toString
+    }
+
+    logInfo("SMA_Thermo_Send", "Arguments {mode:" + setMode + ", program:" + setProgram + ", setpoint:" + setPoint + ", timer:" + setTimeStr + "}")
+
+    val String rnd = ((Math::random * 1000.0).intValue + 1).toString
+    SMA_Thermo_Send_Args.sendCommand("set_thermo " + setMode + " " + setProgram + " " + setPoint + " " + setTimeStr + " " + rnd)
+end
+
+//===================================================
+//  RECEIVE DATA
+//
+rule "Smarther - Receive thermo data"
+when
+    Item SMA_Thermo_Send_Exit received update
+then
+    try {
+        Thread::sleep(500)
+
+        val String rspJson = SMA_Thermo_Send_Data.state.toString
+        logInfo("SMA_Thermo_Send", "Received " + rspJson)
+
+        val String  rspType = transform("JSONPATH", "$.rsptype", rspJson).toString
+        val Integer rspCode = Integer::parseInt(transform("JSONPATH", "$.rspcode", rspJson).toString)
+
+        if ((rspType == "get_status" || rspType == "set_thermo") && rspCode == 200) {
+            //=========================
+            // Refresh thermo measures
+            //=========================
+            val String curTemp = transform("JSONPATH", "$.temperature", rspJson).toString
+            val String curHumi = transform("JSONPATH", "$.humidity", rspJson).toString
+
+            SMA_Thermo_Measure_Temperature.postUpdate(curTemp)
+            SMA_Thermo_Measure_Humidity.postUpdate(curHumi)
+
+            //=======================
+            // Refresh thermo status
+            //=======================
+            val String setMode   = transform("JSONPATH", "$.mode", rspJson).toString
+            val String setPoint  = transform("JSONPATH", "$.setpoint", rspJson).toString
+            val String setTime   = transform("JSONPATH", "$.time", rspJson).toString
+            val String setStatus = transform("JSONPATH", "$.status", rspJson).toString
+
+            SMA_Thermo_Status_SetMode.postUpdate(setMode)
+            SMA_Thermo_Status_SetPoint.postUpdate(setPoint)
+
+            var String setTimeStr = "Forever"
+            if (setTime != "forever") {
+                val DateTime dateSetTime  = new DateTime(setTime)
+                val DateTime dateTomorrow = now.plusDays(1).withTimeAtStartOfDay()
+                val DateTime dateDayAfter = dateTomorrow.plusDays(1)
+
+                if (dateSetTime.isBefore(dateTomorrow)) {
+                    setTimeStr = "Today at " + dateSetTime.toString("HH:mm")
+                }
+                else if (dateSetTime.isBefore(dateDayAfter)) {
+                    setTimeStr = "Tomorrow at " + dateSetTime.toString("HH:mm")
+                }
+                else {
+                    setTimeStr = dateSetTime.toString("dd/MM/yyyy") + " at " + dateSetTime.toString("HH:mm")
+                }
+            }
+            SMA_Thermo_Status_SetTime.postUpdate(setTimeStr)
+
+            //Determine if heating is on
+            if (setStatus == "ACTIVE") {
+                SMA_Thermo_Status_Heating.postUpdate("ON")
+            }
+            else {
+                SMA_Thermo_Status_Heating.postUpdate("OFF")
+            }
+        }
+    }
+    finally {
+        SMA_Thermo_Set_Switch.postUpdate(OFF)
+    }
+end
