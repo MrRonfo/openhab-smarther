@@ -10,15 +10,22 @@ Smarther chronothermostat (product code X8000) is produced by Bticino (https://w
 
 Legrand's "Smarther - v2.0" API need to be used instead: https://portal.developer.legrand.com/docs/services/smartherV2
 
-## Create a Legrand application
+## First steps
 
-### Register developer account
+### Register a Developer account
 Sign up for a new Developer account on Works with Legrand website (https://developer.legrand.com/login).
 
-### Subscribe to API
+### Subscribe to Legrand APIs
 Sign in, go to menu "API > Subscriptions" and make sure you have "Starter Kit for Legrand APIs" subscription activated; if not, activate it.
 
 Go to menu "User > My Subscriptions" and show/write down your subscription's "Primary Key".
+
+### Test the Smarther v2 API calls
+Go to menu "API > APIs List", then choose the "Smarther - v2.0" thumb to access the APIs documentation and testbed.
+
+Choose the "Plants" operation on the left menu, then the "Try It" button. Choose the "Authorization code" option in the Authorization section and click on "Send". Write down the value of plants.id attribute in the JSON response payload, as your thermostat "Plant ID".
+
+Choose the "Topology" operation on the left menu, then the "Try It" button. Insert your Plant ID, choose the "Authorization code" option in the Authorization section and click on "Send". Write down the value of plant.modules[0].id attribute in the JSON response payload, as your thermostat "Module ID".
 
 ### Register a new application
 Go to menu "User > My Applications" and click on "Create new" to register a new application:
@@ -31,9 +38,7 @@ If your app has been approved, you should find in the email your "Client ID" and
 
 ## Gather starting info
 
-### Get topology details (plant, module)
-
-### Get Authoeization
+### Get Authorization
 TBD Oauth2 interation
 
 ### Get and save access token
