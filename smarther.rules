@@ -6,10 +6,12 @@ when
        Item SMA_Thermo_Set_Mode received update
     or Item SMA_Thermo_Set_Date received update
 then
-    if (SMA_Thermo_Set_Mode.state == "MANUAL" && (SMA_Thermo_Set_Date.state == 1 || SMA_Thermo_Set_Date.state == 2))
+    if (SMA_Thermo_Set_Mode.state == "MANUAL" && (SMA_Thermo_Set_Date.state == 1 || SMA_Thermo_Set_Date.state == 2)) {
         SMA_Thermo_Set_ShowTime.sendCommand(ON)
-    else
+    }
+    else {
         SMA_Thermo_Set_ShowTime.sendCommand(OFF)
+    }
 end
 
 //===================================================
@@ -22,13 +24,14 @@ when
     or Item SMA_Thermo_Set_Date received update
     or Item SMA_Thermo_Set_Boost received update
 then
-    if (    (SMA_Thermo_Set_Mode.state == "AUTOMATIC" && SMA_Thermo_Set_Program.state == NULL)
-         || (SMA_Thermo_Set_Mode.state == "MANUAL" && (SMA_Thermo_Set_Date.state == NULL || SMA_Thermo_Set_Date.state > 2))
-         || (SMA_Thermo_Set_Mode.state == "BOOST" && SMA_Thermo_Set_Boost.state == NULL)
-    )
+    if ((SMA_Thermo_Set_Mode.state == "AUTOMATIC" && SMA_Thermo_Set_Program.state == NULL)
+        || (SMA_Thermo_Set_Mode.state == "MANUAL" && (SMA_Thermo_Set_Date.state == NULL || SMA_Thermo_Set_Date.state > 2))
+        || (SMA_Thermo_Set_Mode.state == "BOOST" && SMA_Thermo_Set_Boost.state == NULL)) {
         SMA_Thermo_Set_ShowApply.sendCommand(OFF)
-    else
+    }
+    else {
         SMA_Thermo_Set_ShowApply.sendCommand(ON)
+    }
 end
 
 //===================================================
@@ -68,7 +71,7 @@ then
     SMA_Thermo_Set_Minute.postUpdate(30)
 
     // Run thermo set switch command 
-    SMA_Thermo_Set_Switch.sendCommand(ON);
+    SMA_Thermo_Set_Switch.sendCommand(ON)
 
     SMA_Thermo_Quick_Start.postUpdate(OFF)
 end
@@ -173,10 +176,10 @@ then
 
             //Determine if heating is on
             if (setStatus == "ACTIVE") {
-                SMA_Thermo_Status_Heating.postUpdate("ON")
+                SMA_Thermo_Status_Heating.postUpdate(ON)
             }
             else {
-                SMA_Thermo_Status_Heating.postUpdate("OFF")
+                SMA_Thermo_Status_Heating.postUpdate(OFF)
             }
         }
     }
