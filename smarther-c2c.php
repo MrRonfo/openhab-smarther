@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -7,11 +7,19 @@ use Monolog\Formatter\LineFormatter;
 
 // Create a log channel
 $log = new Logger('Smarther');
-$logHandler = new StreamHandler('/var/log/php/smarther-c2c.log', Logger::INFO);
+$logHandler = new StreamHandler('/var/log/php/smarther-c2c.log', Logger::DEBUG);
 $logHandler->setFormatter(new LineFormatter("[%datetime%] %level_name% %message%\n", "d/m/Y H:i:s", false, true));
 $log->pushHandler($logHandler);
 
-define("REST_API", "http://<OpenHAB server IP address>:8080/rest/");
+//------------------------------------------------------------------------------
+// BEGIN -- Configuration Section
+//--------------------------------
+
+define("REST_API", "http://192.168.1.10:8080/rest/");
+
+//--------------------------------
+// END -- Configuration Section
+//------------------------------------------------------------------------------
 
 class ThermostatStatus {
     protected $thHeating;
@@ -29,6 +37,7 @@ class ThermostatStatus {
         $this->thHumidity    = $notification["hygrometer"]["measures"][0]["value"];
 
         if (isset($notification["activationTime"])) {
+            // "activationTime":"2019-02-20T23:30:00Z"
             $tmpActTime = date_create_from_format('Y-m-d\TH:i:s\Z', $notification["activationTime"]);
             $tmpTomorrow = date_create_from_format('Y-m-d H:i:s', date_format(date_create('tomorrow'), 'Y-m-d').' 00:00:00');
             $tmpDayAfter = date_add($tmpTomorrow, date_interval_create_from_date_string('+1 day'));
@@ -121,21 +130,21 @@ function updateItemState ($itemName, $itemState) {
 }
 
 function updateThermostatStatus(&$thermostat) {
-    $result = updateItemState("COR_Thermo_Status_Heating", $thermostat->getHeating());
+    $result = updateItemState("SMA_Thermo_Status_Heating", $thermostat->getHeating());
     if ($result == 0) {
-        $result = updateItemState("COR_Thermo_Status_SetMode", $thermostat->getMode());
+        $result = updateItemState("SMA_Thermo_Status_SetMode", $thermostat->getMode());
     }
     if ($result == 0) {
-        $result = updateItemState("COR_Thermo_Status_SetPoint", $thermostat->getSetPoint());
+        $result = updateItemState("SMA_Thermo_Status_SetPoint", $thermostat->getSetPoint());
     }
     if ($result == 0) {
-        $result = updateItemState("COR_Thermo_Status_SetTime", $thermostat->getTime());
+        $result = updateItemState("SMA_Thermo_Status_SetTime", $thermostat->getTime());
     }
     if ($result == 0) {
-        $result = updateItemState("COR_Thermo_Measure_Temperature", $thermostat->getTemperature());
+        $result = updateItemState("SMA_Thermo_Measure_Temperature", $thermostat->getTemperature());
     }
     if ($result == 0) {
-        updateItemState("COR_Thermo_Measure_Humidity", $thermostat->getHumidity());
+        $result = updateItemState("SMA_Thermo_Measure_Humidity", $thermostat->getHumidity());
     }
     return $result;
 }
