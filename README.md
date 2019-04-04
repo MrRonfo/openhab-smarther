@@ -3,7 +3,7 @@ Scripts created and operations performed to achieve integration between Bticino 
 
 The following instructions are mapped to my environment, where I have:
 - an OpenHAB v2.4 home server, running on Raspberry Pi 3 model B+
-- a Nginx web server with PHP, running on Raspberry Pi 3 model B
+- an Nginx web server with PHP, running on Raspberry Pi 3 model B
 - just one Smarther chronothermostat to be controlled 
 
 Smarther chronothermostat (product code X8000) is produced by Bticino (https://www.smarther.bticino.it) and doesn't support the OpenWebNet protocol.
@@ -33,24 +33,45 @@ Go to menu "User > My Applications" and click on "Create new" to register a new 
 - Make sure to tick the checkbox near scopes "comfort.read" and "comfort.write"
 
 Submit your request and wait for a response via email from Legrand (it usually takes 1-2 days max).
+If your app has been approved, you should find in the email your "Client ID" and "Client Secret" attributes.
 
-If your app has been approved, you should find in the email your "Client ID" and "Client Secret" attributes.  
+**Note:** OAuth server will redirect the first step of authentication process to the First Reply Url you insert into new application registration form. Legrand will not allow you to change it at a later stage, thus make sure it points to the public Url of your smarther-auth.php script (see script installation section for more info).
+In my case it is:
 
-## Gather starting info
-
-### Get Authorization
-TBD Oauth2 interation
-
-### Get and save access token
-Refresh.json
+> First Reply Url = https://myWebServerIP:myWebServerPort/smarther/smarther-auth.php
 
 ## Script installation
 
-### Install shell script
-Path
+### API script
+Log into your OpenHab server, then create a directory "smarther" under your $OPENHAB_CONF/scripts/ directory and, inside it, the subdirectories "data" and "log":
 
-### Install php script
-Path
+> mkdir $OPENHAB_CONF/scripts/smarther
+> mkdir $OPENHAB_CONF/scripts/smarther/data
+> mkdir $OPENHAB_CONF/scripts/smarther/log
+
+Copy the smarther-api.sh script into smarther/ directory and give it execute grant, then change the owner of smarther/ branch:
+
+> chmod +x $OPENHAB_CONF/scripts/smarther/smarther-api.sh
+> sudo chown -R openhab:openhabian $OPENHAB_CONF/scripts/smarther/
+
+### Web server script
+Log into your Web server, then create a directory "smarther" under your webroot and a new logfile under /var/log/php.
+In my case:
+
+> sudo mkdir /var/www/html/smarther/
+> sudo touch /var/log/php/smarther-c2c.log
+
+Copy the smarther-auth.php and smarther-c2c.php script into smarther/ directory and assign the correct ownerships:
+
+> sudo chown -R www-data:adm /var/www/html/smarther/
+> sudo chown www-data:adm /var/log/php/smarther-c2c.log
+
+## Configuration and authorization
+
+### Script configuration
+TBD Oauth2 interation
+
+### One-time authorization process
 
 ### Cloud 2 Cloud notifications
 Register endpoint
