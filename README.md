@@ -1,5 +1,5 @@
 # openhab-smarther
-Scripts created and operations performed to achieve integration between Bticino Smarther chronothermostat and OpenHAB v2 server.
+Scripts created and operations performed to achieve integration between Bticino Smarther chronothermostat and OpenHAB v2 server, via Legrand's "Smarther - v2.0" API gateway. 
 
 The following instructions are mapped to my environment, where I have:
 - an OpenHAB v2.4 home server, running on Raspberry Pi 3 model B+
