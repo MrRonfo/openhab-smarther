@@ -73,13 +73,46 @@ sudo chown www-data:adm /var/log/php/smarther-c2c.log
 ## Configuration and authorization
 
 ### Script configuration
-TBD Oauth2 interation
+Open the smarther-api.sh script and update the "Configuration Section" with your actual values:
+```
+subscription_key="yourSubscriptionKey"
+client_id="yourClientId"
+client_secret="yourClientSecret"
+redirect_uri="https://yourWebServerPublicIP:yourWebServerPort/smarther/smarther-auth.php"
+plant_id="thePlantIdOfYourHome"
+module_id="theModuleIdOfYourThermostat"
+notify_url="https://yourWebServerPublicIP:yourWebServerPort/smarther/smarther-c2c.php"
+```
+Then, open the smarther-c2c.php script and update the "Configuration Section" with your actual values:
+```
+define("REST_API", "http://yourOpenhabServerIP:yourOpenhabServerPort/rest/");
+```
 
 ### One-time authorization process
-
-### Cloud 2 Cloud notifications
-Register endpoint
+1. Execute the smarther-api.sh script with no parameters, the first time you'll receive the following error message:
+> OAuth2 code is missing or invalid. To restore the authentication flow call the following Url from a browser: < url >
+2. Open the < url > in a browser and complete the OAuth2 authorization process, inserting your developer account credentials when needed.
+3. If everything worked fine, you'll be redirected to your smarther-auth.php script, which should automatically download a file named "authorization.json".
+4. Copy that file inside $OPENHAB_CONF/scripts/smarther/data/ directory.
+5. Execute the smarther-api.sh script again with "get_status" parameter:
+```
+. ./smarther-api.sh get_status
+```
+6. If everything worked fine, you should get back the status of your chronothermostat; something like:
+```
+{"rsptype":"get_status","rspcode":200,"function":"HEATING","mode":"AUTOMATIC","setpoint":7,"program":1,"time":"forever","tempformat":"C","status":"INACTIVE","temperature":19.3,"humidity":43.5}
+```
 
 ## Openhab files installation
-Files
 Openhab exec thing setup
+
+### Cloud 2 Cloud notifications
+Step needed to register your smarther-c2c.php endpoint on MS Azure Cloud2Cloud notification server and start receiving notifications on changes to your chronothermostat status.
+1. Execute the smarther-api.sh script with "set_subscription" parameter
+```
+. ./smarther-api.sh set_subscription
+```
+2. If everything worked fine, you should get back the status of your subscription; something like:
+```
+<to be completed>
+```
