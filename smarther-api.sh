@@ -152,6 +152,11 @@ if [ -z "$access_token_expiry_string" ]; then
     echo $rsp_body | jq '.' | more > $data_dir/refresh.json
     access_token=$(less $data_dir/refresh.json | jq -r .access_token)
 
+    if [ $USER != "openhab" ]; then
+        # Making sure the refresh token file is owned by openHAB user
+        sudo chown openhab $data_dir/refresh.json
+    fi
+
     # Logging access token expiry timestamp
     access_token_expiry_string=$(less $data_dir/refresh.json | jq -r .expires_on)
     access_token_expiry_tstamp=$(date -d "@$access_token_expiry_string")
