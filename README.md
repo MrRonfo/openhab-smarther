@@ -138,3 +138,6 @@ To register your smarther-c2c.php endpoint on MS Azure Cloud2Cloud notification 
 ```
 {"rsptype":"set_subscription","rspcode":201,"subscriptions":{"subscriptionId":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"}}
 ```
+
+## Acknowledgments
+- [Francesco Ranieri](https://community.openhab.org/u/francesco_ranieri/), for having pointed me in the right direction and a first [code sample](https://community.openhab.org/t/bticino-smarther-thermostat/39621/13) to start playing with.
