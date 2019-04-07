@@ -104,10 +104,32 @@ define("REST_API", "http://yourOpenhabServerIP:yourOpenhabServerPort/rest/");
 ```
 
 ## Openhab files installation
-Openhab exec thing setup
+Open PaperUI, go to Add-ons menu and add the following:
+- Bindings > "Exec Binding"
+- Transformations > "RegEx Transformation"
+- Transformations > "JSONPath Transformation"
+
+Now, go to Inbox > Exec Binding > Choose Thing > Command and create a new command with the following setup:
+- Name = Smarther Thermostat
+- Thing ID = smarther_api
+- Location = <choose your preferred one>
+- Command = /etc/openhab2/scripts/smarther/smarther-api.sh %2$s
+- Interval = 0
+- Timeout = 10
+- Autorun = true
+
+Then:
+1. Copy the smarther.map in your $OPENHAB_CONF/transform/ directory
+2. Copy the smarther.items file in your $OPENHAB_CONF/items/ directory
+3. Merge the smarther.sitemap content with your "master" default.sitemap file
+4. Copy the smarther.rules file in your $OPENHAB_CONF/rules/
+
+You should now see the Smarther Chronothermostat in your Basic UI interface and start interacting with it.
+
+The last step it to register your endpoint to receive notifications and automatically change the value of your Smarther items according to the thermostat status provided by the remote gateway.  
 
 ### Cloud 2 Cloud notifications
-Step needed to register your smarther-c2c.php endpoint on MS Azure Cloud2Cloud notification server and start receiving notifications on changes to your chronothermostat status.
+To register your smarther-c2c.php endpoint on MS Azure Cloud2Cloud notification server and start receiving notifications on changes to your chronothermostat status, do as follows:
 1. Execute the smarther-api.sh script with "set_subscription" parameter
 ```
 . ./smarther-api.sh set_subscription
