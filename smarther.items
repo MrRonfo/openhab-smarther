@@ -1,4 +1,4 @@
-Group SMA_Thermo     "Heating Thermostat" <heating>  (HOU_House)
+Group SMA_Thermo     "Heating Thermostat" <heating>
 Group SMA_Thermo_Set "Thermo Settings"    <settings> (SMA_Thermo)
 
 // Smarther thermostat items for exec-binding
@@ -8,8 +8,8 @@ Number SMA_Thermo_Send_Exit { channel="exec:command:smarther_api:exit" }
 String SMA_Thermo_Send_Data { channel="exec:command:smarther_api:output" }
 
 // Smarther thermostat items for measures
-Number SMA_Thermo_Measure_Temperature "Indoor Temperature [%.1f °C]" <temperature> (SMA_Thermo, HOU_Temperatures)
-Number SMA_Thermo_Measure_Humidity    "Indoor Humidity [%.1f %%]"    <humidity>    (SMA_Thermo, HOU_Humidities)
+Number SMA_Thermo_Measure_Temperature "Indoor Temperature [%.1f °C]" <temperature> (SMA_Thermo)
+Number SMA_Thermo_Measure_Humidity    "Indoor Humidity [%.1f %%]"    <humidity>    (SMA_Thermo)
 
 // Smarther thermostat items for status
 Switch SMA_Thermo_Status_Heating      "Heating is now [%s]"          <fire>        (SMA_Thermo)
