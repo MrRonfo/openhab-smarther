@@ -112,7 +112,7 @@ Open PaperUI, go to Add-ons menu and add the following:
 Now, go to Inbox > Exec Binding > Choose Thing > Command and create a new command with the following setup:
 - Name = Smarther Thermostat
 - Thing ID = smarther_api
-- Location = <choose your preferred one>
+- Location = (choose your preferred one)
 - Command = /etc/openhab2/scripts/smarther/smarther-api.sh %2$s
 - Interval = 0
 - Timeout = 10
@@ -126,7 +126,7 @@ Then:
 
 You should now see the Smarther Chronothermostat in your Basic UI interface and start interacting with it.
 
-The last step it to register your endpoint to receive notifications and automatically change the value of your Smarther items according to the thermostat status provided by the remote gateway.  
+One last step is needed to register your endpoint on the Legrand's remote gateway, to start receiving notifications and automatically change the value of your Smarther items according to the thermostat status provided by the remote gateway.
 
 ### Cloud 2 Cloud notifications
 To register your smarther-c2c.php endpoint on MS Azure Cloud2Cloud notification server and start receiving notifications on changes to your chronothermostat status, do as follows:
@@ -136,5 +136,5 @@ To register your smarther-c2c.php endpoint on MS Azure Cloud2Cloud notification 
 ```
 2. If everything worked fine, you should get back the status of your subscription; something like:
 ```
-<to be completed>
+{"rsptype":"set_subscription","rspcode":201,"subscriptions":{"subscriptionId":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"}}
 ```
