@@ -95,6 +95,16 @@ class ThermostatStatus {
     }
 }
 
+function printAllHeaders() {
+    global $log;
+    foreach ($_SERVER as $name => $value) {
+        if (substr($name, 0, 5) == 'HTTP_') {
+            $hName = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
+            $log->debug("HTTP Header - name:".$hName." value:".$value);
+        }
+    }
+}
+
 function makeHttpCall($url, &$data, $method="GET", $contentType="text/plain", $timeout=5) {
     $params = "";
     if (in_array(gettype($data), array('array', 'object'))) {
@@ -149,6 +159,8 @@ function updateThermostatStatus(&$thermostat) {
     return $result;
 }
 
+//printAllHeaders();
+
 $body = file_get_contents('php://input');
 $log->debug("Notification Body.: $body");
 
@@ -157,7 +169,7 @@ $json = json_decode($body, true);
 
 $respData = array();
 
-if ($_SERVER["HTTP_AEG_EVENT_TYPE"] == "SubscriptionValidation") {
+if (isset($json[0]["eventType"]) && ($json[0]["eventType"] == "Microsoft.EventGrid.SubscriptionValidationEvent")) {
     // Azure subscription validation (https://docs.microsoft.com/en-us/azure/event-grid/security-authentication)
     $validationCode = $json[0]["data"]["validationCode"];
     $log->info(" Validation Code...: $validationCode");

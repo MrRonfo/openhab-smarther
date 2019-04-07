@@ -15,7 +15,7 @@ module_id="theModuleIdOfYourThermostat"
 # Cloud2Cloud notification callback URL
 notify_url="https://yourWebServerPublicIP:yourWebServerPort/smarther/smarther-c2c.php"
 # Log level
-log_level="DEBUG"
+log_level="INFO"
 #--------------------------------
 # END -- Configuration Section
 #-------------------------------------------------------------------------------
