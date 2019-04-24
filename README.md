@@ -29,7 +29,7 @@ Choose the "Topology" operation on the left menu, then the "Try It" button. Inse
 
 ### 1.4. Register a new application
 Go to menu "User > My Applications" and click on "Create new" to register a new application:
-- Insert a valid **public** Url in "First Reply Url" as it will be called back later by the OAuth remote server (see below) 
+- Insert a valid **public** Url in "First Reply Url", as it will be called back later by the OAuth remote server (see below) 
 - Make sure to tick the checkbox near scopes "comfort.read" and "comfort.write"
 
 Submit your request and wait for a response via email from Legrand (it usually takes 1-2 days max).
