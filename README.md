@@ -10,24 +10,24 @@ Smarther chronothermostat (product code X8000) is produced by Bticino (https://w
 
 Legrand's "Smarther - v2.0" API need to be used instead: https://portal.developer.legrand.com/docs/services/smartherV2
 
-## First steps
+## 1. First steps
 
-### Register a Developer account
+### 1.1. Register a Developer account
 Sign up for a new Developer account on Works with Legrand website (https://developer.legrand.com/login).
 
-### Subscribe to Legrand APIs
+### 1.2. Subscribe to Legrand APIs
 Sign in, go to menu "API > Subscriptions" and make sure you have "Starter Kit for Legrand APIs" subscription activated; if not, activate it.
 
 Go to menu "User > My Subscriptions" and show/write down your subscription's "Primary Key".
 
-### Test the Smarther v2 API calls
+### 1.3. Test the Smarther v2 API calls
 Go to menu "API > APIs List", then choose the "Smarther - v2.0" thumb to access the APIs documentation and testbed.
 
 Choose the "Plants" operation on the left menu, then the "Try It" button. Choose the "Authorization code" option in the Authorization section and click on "Send". Write down the value of plants.id attribute in the JSON response payload, as your thermostat "Plant ID".
 
 Choose the "Topology" operation on the left menu, then the "Try It" button. Insert your Plant ID, choose the "Authorization code" option in the Authorization section and click on "Send". Write down the value of plant.modules[0].id attribute in the JSON response payload, as your thermostat "Module ID".
 
-### Register a new application
+### 1.4. Register a new application
 Go to menu "User > My Applications" and click on "Create new" to register a new application:
 - Insert a valid Url in "First Reply Url" as it will be called back by the OAuth authentication procedure (see below) 
 - Make sure to tick the checkbox near scopes "comfort.read" and "comfort.write"
@@ -40,9 +40,9 @@ In my case it is:
 
 > First Reply Url = https://myWebServerIP:myWebServerPort/smarther/smarther-auth.php
 
-## Script installation
+## 2. Script installation
 
-### API script
+### 2.1. API script
 Log into your OpenHab server, then create a directory "smarther" under your $OPENHAB_CONF/scripts/ directory and, inside it, the subdirectories "data" and "log":
 ```
 mkdir $OPENHAB_CONF/scripts/smarther
@@ -56,7 +56,7 @@ chmod +x $OPENHAB_CONF/scripts/smarther/smarther-api.sh
 sudo chown -R openhab:openhabian $OPENHAB_CONF/scripts/smarther/
 ```
 
-### Web server script
+### 2.2. Web server script
 Log into your Web server, then create a directory "smarther" under your webroot and a new logfile under /var/log/php.
 In my case:
 ```
@@ -70,9 +70,9 @@ sudo chown -R www-data:adm /var/www/html/smarther/
 sudo chown www-data:adm /var/log/php/smarther-c2c.log
 ```
 
-## Configuration and authorization
+## 3. Configuration and authorization
 
-### Script configuration
+### 3.1. Script configuration
 Open the smarther-api.sh script and update the "Configuration Section" with your actual values:
 ```
 subscription_key="yourSubscriptionKey"
@@ -88,7 +88,7 @@ Then, open the smarther-c2c.php script and update the "Configuration Section" wi
 define("REST_API", "http://yourOpenhabServerIP:yourOpenhabServerPort/rest/");
 ```
 
-### One-time authorization process
+### 3.2. One-time authorization process
 1. Execute the smarther-api.sh script with no parameters, the first time you'll receive the following error message:
 > OAuth2 code is missing or invalid. To restore the authentication flow call the following Url from a browser: < url >
 2. Open the < url > in a browser and complete the OAuth2 authorization process, inserting your developer account credentials when needed.
@@ -103,7 +103,7 @@ define("REST_API", "http://yourOpenhabServerIP:yourOpenhabServerPort/rest/");
 {"rsptype":"get_status","rspcode":200,"function":"HEATING","mode":"AUTOMATIC","setpoint":7,"program":1,"time":"forever","tempformat":"C","status":"INACTIVE","temperature":19.3,"humidity":43.5}
 ```
 
-## Openhab files installation
+## 4. Openhab files installation
 Open PaperUI, go to Add-ons menu and add the following:
 - Bindings > "Exec Binding"
 - Transformations > "RegEx Transformation"
@@ -128,7 +128,7 @@ You should now see the Smarther Chronothermostat in your Basic UI interface and 
 
 One last step is needed to register your endpoint on the Legrand's remote gateway, to start receiving notifications and automatically change the value of your Smarther items according to the thermostat status provided by the remote gateway.
 
-### Cloud 2 Cloud notifications
+### 4.1. Cloud 2 Cloud notifications
 To register your smarther-c2c.php endpoint on MS Azure Cloud2Cloud notification server and start receiving notifications on changes to your chronothermostat status, do as follows:
 1. Execute the smarther-api.sh script with "set_subscription" parameter
 ```
@@ -139,5 +139,5 @@ To register your smarther-c2c.php endpoint on MS Azure Cloud2Cloud notification 
 {"rsptype":"set_subscription","rspcode":201,"subscriptions":{"subscriptionId":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"}}
 ```
 
-## Acknowledgments
+## 5. Acknowledgments
 - [Francesco Ranieri](https://community.openhab.org/u/francesco_ranieri/), for having pointed me in the right direction and a first [code sample](https://community.openhab.org/t/bticino-smarther-thermostat/39621/13) to start playing with.
