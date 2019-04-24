@@ -1,4 +1,7 @@
 # openhab-smarther
+
+[![Join the chat at https://gitter.im/openhab-smarther/community](https://badges.gitter.im/openhab-smarther/community.svg)](https://gitter.im/openhab-smarther/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Scripts created and operations performed to achieve integration between Bticino Smarther chronothermostat and OpenHAB v2 server, via Legrand's "Smarther - v2.0" API gateway. 
 
 The following instructions are mapped to my environment, where I have:
