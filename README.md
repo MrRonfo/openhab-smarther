@@ -29,13 +29,13 @@ Choose the "Topology" operation on the left menu, then the "Try It" button. Inse
 
 ### 1.4. Register a new application
 Go to menu "User > My Applications" and click on "Create new" to register a new application:
-- Insert a valid **public** URL in "First Reply Url", as it will be called back later by the OAuth remote server (see 3.1)
+- Insert a valid **public** URL in "First Reply Url", as it will be called back later by the OAuth remote server (see [3.1](#31-bash-script-configuration))
 - Make sure to tick the checkbox near scopes `comfort.read` and `comfort.write`
 
 Submit your request and wait for a response via email from Legrand (it usually takes 1-2 days max).
 If your app has been approved, you should find in the email your "Client ID" and "Client Secret" attributes.
 
-**Note:** OAuth server will redirect the first step of authentication process to the First Reply Url you insert into new application registration form. Legrand will not allow you to change it at a later stage, thus make sure it points to the **public** URL of your smarther-auth.php script (see section 3.1 for more info).
+**Note:** OAuth server will redirect the first step of authentication process to the First Reply Url you insert into new application registration form. Legrand will not allow you to change it at a later stage, thus make sure it points to the **public** URL of your smarther-auth.php script (see section [3.1](#31-bash-script-configuration) for more info).
 In my case it is:
 ```
 First Reply Url = https://myWebServerIP:myWebServerPort/smarther/smarther-auth.php
@@ -91,7 +91,7 @@ notify_url="https://yourWebServerPublicIP:yourWebServerPort/smarther/smarther-c2
 ```
 client_secret="xxxxx\"yyyyy"
 ```
-**Note #2:** both the `redirect_uri` and `notify_url` must point to a **public** URL; the 1st one is used in the OAuth authentication process and must contain the same value as the First Reply Url registered with the application (see sections 1.4 and 3.2), while the 2nd one will be later used by MS Azure cloud to push thermostat status notifications to your server (see section 4.1).
+**Note #2:** both the `redirect_uri` and `notify_url` must point to a **public** URL. The 1st one is used in the OAuth authentication process and must contain the same value as the First Reply Url registered with the application (see sections [1.4](#14-register-a-new-application) and [3.3](#33-one-time-authorization-process)); The 2nd one will be later used by MS Azure cloud to push thermostat status notifications to your server (see section [4.1](#41-cloud-2-cloud-notifications)).
 
 ### 3.2. PHP script configuration
 Open the `smarther-c2c.php` script and update the "Configuration Section" with your actual values:
