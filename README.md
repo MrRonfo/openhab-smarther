@@ -1,3 +1,5 @@
+[![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
+
 # openhab-smarther
 Scripts created and operations performed to achieve integration between BTicino Smarther chronothermostat and OpenHAB v2 server, via Legrand's "Smarther - v2.0" API gateway. 
 
