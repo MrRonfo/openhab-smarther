@@ -152,10 +152,13 @@ if [ -z "$access_token_expiry_string" ]; then
     echo $rsp_body | jq '.' | more > $data_dir/refresh.json
     access_token=$(less $data_dir/refresh.json | jq -r .access_token)
 
-    if [ $USER != "openhab" ]; then
-        # Making sure the refresh token file is owned by openHAB user
-        sudo chown openhab $data_dir/refresh.json
-    fi
+    # Getting user:group:permissions information on this script
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd)"
+    user_group=$(stat -c "%U:%G" $script_dir/smarther-api.sh)
+    # Making sure the refresh token file is owned by same user:group as this script
+    sudo chown $user_group $data_dir/refresh.json
+    # Making sure that write permission on refresh token file is granted to group members as well
+    sudo chmod 664 $data_dir/refresh.json
 
     # Logging access token expiry timestamp
     access_token_expiry_string=$(less $data_dir/refresh.json | jq -r .expires_on)
