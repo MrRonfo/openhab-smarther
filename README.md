@@ -4,8 +4,8 @@ Scripts created and operations performed to achieve integration between BTicino 
 [![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
 
 The following instructions are mapped to my environment, where I have:
-- an OpenHAB v2.4 home server, running on Raspberry Pi 3 model B+
-- an Nginx web server with PHP, running on Raspberry Pi 3 model B
+- an OpenHAB v2.4 home server, installed on a Raspberry Pi 3 model B+ using openHABian v1.4.1
+- an Nginx web server with PHP, installed on a Raspberry Pi 3 model B
 - just one Smarther chronothermostat to be controlled 
 
 Smarther chronothermostat (product code X8000) is produced by Bticino (https://www.smarther.bticino.it) and doesn't support the OpenWebNet protocol.
@@ -59,7 +59,7 @@ chmod +x $OPENHAB_CONF/scripts/smarther/smarther-api.sh
 sudo chown -R openhab:openhabian $OPENHAB_CONF/scripts/smarther/
 ```
 
-**Note:** this last step is needed in my case, as the default script user is `openhabian` while OH2 runs under `openhab` user; without changing the ownership, the script called from within OH2 would fail updating its service json file.  
+**Note:** the `chown` step is needed in my case as openHABian creates the "default" user `openhabian` while OH2 runs under `openhab` user; different installations could require to change the script ownership to `openhab:openhab`. In any case the ownership should be the same as the other files in your OH2 instance, otherwise the script called from within OH2 could fail updating its service json file.
 
 ### 2.2. Web server script
 Log into your Web server, then create a directory `smarther` under your webroot and a new logfile under `/var/log/php`.
