@@ -294,7 +294,7 @@ case $1 in
                 data_ascii="{\"function\":\"heating\",\"mode\":\"automatic\",\"programs\":[{\"number\":$3}]}"
             ;;
             manual)
-                if [ "$5" = "off" ]; then
+                if [ "$5" = "forever" ]; then
                     data_ascii="{\"function\":\"heating\",\"mode\":\"manual\",\"setPoint\":{\"value\":$4,\"unit\":\"C\"}}"
                 else
                     data_ascii="{\"function\":\"heating\",\"mode\":\"manual\",\"setPoint\":{\"value\":$4,\"unit\":\"C\"},\"activationTime\":\"$5\"}"
