@@ -38,12 +38,12 @@ class ThermostatStatus {
 
         if (isset($notification["activationTime"])) {
             // "activationTime":"2019-02-20T23:30:00Z"
-            $tmpActTime = date_create_from_format('Y-m-d\TH:i:s\Z', $notification["activationTime"]);
+            $tmpActTime  = date_create_from_format('Y-m-d\TH:i:s', $notification["activationTime"]);
             $tmpTomorrow = date_create_from_format('Y-m-d H:i:s', date_format(date_create('tomorrow'), 'Y-m-d').' 00:00:00');
             $tmpDayAfter = date_add($tmpTomorrow, date_interval_create_from_date_string('+1 day'));
 
             if ($tmpActTime < $tmpTomorrow) {
-                 $this->thTime = "Today at ".date_format($tmpActTime, 'H:i');
+                $this->thTime = "Today at ".date_format($tmpActTime, 'H:i');
             }
             elseif ($tmpActTime < $tmpDayAfter) {
                 $this->thTime = "Tomorrow at ".date_format($tmpActTime, 'H:i');
