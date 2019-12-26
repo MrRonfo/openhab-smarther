@@ -59,7 +59,9 @@ chmod +x $OPENHAB_CONF/scripts/smarther/smarther-api.sh
 sudo chown -R openhab:openhabian $OPENHAB_CONF/scripts/smarther/
 ```
 
-**Note:** the `chown` step is needed in my case as openHABian creates the "default" user `openhabian` while OH2 runs under `openhab` user; different installations could require to change the script ownership to `openhab:openhab`. In any case the ownership should be the same as the other files in your OH2 instance, otherwise the script called from within OH2 could fail updating its service json file.
+**Note #1:** the `chown` step is needed in my case as openHABian creates the "default" user `openhabian` while OH2 runs under `openhab` user; different installations could require to change the script ownership to `openhab:openhab`. In any case the ownership should be the same as the other files in your OH2 instance, otherwise the script called from within OH2 could fail updating its service json file.
+
+**Note #2:** make sure the bash `jq` command is installed in your OpenHab server. Check it via `type jq`; on result like `-bash: type: pippo: not found`, you have to install it for the script to work (if you're on Raspbian/Debian distros it can be installed via `sudo apt install jq`).
 
 ### 2.2. Web server script
 Log into your Web server, then create a directory `smarther` under your webroot and a new logfile under `/var/log/php`.
