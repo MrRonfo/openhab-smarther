@@ -1,9 +1,9 @@
 AUTOMATIC=Automatic
 MANUAL=Manual
 BOOST=Boost
-OFF=OFF
+OFF=Off
 PROTECTION=Protection
-0=OFF
+0=Off
 1=Program 1
 2=Program 2
 3=Program 3
